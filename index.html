@@ -1,0 +1,924 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KuisAman - Kuis Multi Mata Pelajaran</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  background: #f4f5ff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #22243d;
+}
+
+.app {
+  width: 100%;
+  max-width: 850px;
+  background: white;
+  border-radius: 22px;
+  padding: 30px;
+  box-shadow: 0 15px 40px #3332;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  color: #6558e8;
+}
+
+.badge {
+  background: #f0efff;
+  color: #6558e8;
+  padding: 9px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 30px;
+  margin-top: 30px;
+}
+
+p {
+  color: #777;
+  line-height: 1.6;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 20px;
+}
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.subject {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.subject.selected {
+  background: #f0efff;
+  border: 2px solid #6558e8;
+}
+
+.subject span {
+  display: block;
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+
+.subject strong {
+  font-size: 14px;
+}
+
+.subject small {
+  display: block;
+  margin-top: 5px;
+  color: #777;
+}
+
+button {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 14px;
+  border: none;
+}
+
+.primary {
+  background: #6558e8;
+  color: white;
+}
+
+.primary:hover {
+  background: #5144cf;
+}
+
+.wide {
+  width: 100%;
+  margin-top: 22px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.topline {
+  display: flex;
+  justify-content: space-between;
+  margin: 25px 0 15px;
+  font-weight: bold;
+}
+
+.timer {
+  background: #f0efff;
+  color: #6558e8;
+  padding: 9px 12px;
+  border-radius: 10px;
+}
+
+.progress {
+  height: 9px;
+  background: #eee;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#progress {
+  height: 100%;
+  background: #6558e8;
+  width: 0;
+}
+
+.question {
+  font-size: 23px;
+  margin: 25px 0;
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer {
+  background: white;
+  border: 1px solid #ddd;
+  text-align: left;
+  color: #22243d;
+  line-height: 1.5;
+}
+
+.answer:disabled {
+  cursor: default;
+}
+
+.correct {
+  background: #dff8ec;
+  border: 1px solid #159b68;
+}
+
+.wrong {
+  background: #ffe5e8;
+  border: 1px solid #d94b61;
+}
+
+.feedback {
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 18px;
+  line-height: 1.5;
+}
+
+.good {
+  background: #dff8ec;
+  color: #116b4b;
+}
+
+.bad {
+  background: #ffe5e8;
+  color: #a72d43;
+}
+
+.quiz-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.result {
+  text-align: center;
+}
+
+.score {
+  font-size: 55px;
+  color: #6558e8;
+  font-weight: bold;
+  margin: 25px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.stat {
+  background: #f7f7fc;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 23px;
+}
+
+.stat small {
+  color: #777;
+}
+
+.secondary {
+  background: #f0efff;
+  color: #6558e8;
+}
+
+.footer {
+  text-align: center;
+  color: #aaa;
+  font-size: 12px;
+  margin-top: 30px;
+}
+
+@media(max-width:600px) {
+  .subject-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .answers {
+    grid-template-columns: 1fr;
+  }
+
+  .app {
+    padding: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">✦ KuisAman</div>
+  <span class="badge">MULTI MATA PELAJARAN</span>
+</header>
+
+<!-- HALAMAN AWAL -->
+<section id="setup">
+
+<h1>Belajar Jadi Lebih Seru!</h1>
+
+<p>
+Pilih mata pelajaran yang ingin kamu kerjakan.
+Jawab pertanyaan dan kumpulkan poin sebanyak mungkin!
+</p>
+
+<label>Nama Siswa</label>
+<input id="studentName" placeholder="Masukkan nama kamu">
+
+<label>Pilih Mata Pelajaran</label>
+
+<div class="subject-grid">
+
+<button class="subject selected"
+data-subject="Bahasa Indonesia">
+<span>📚</span>
+<strong>Bahasa Indonesia</strong>
+<small>5 soal</small>
+</button>
+
+<button class="subject"
+data-subject="Matematika">
+<span>➗</span>
+<strong>Matematika</strong>
+<small>5 soal</small>
+</button>
+
+<button class="subject"
+data-subject="IPA">
+<span>🔬</span>
+<strong>IPA</strong>
+<small>5 soal</small>
+</button>
+
+<button class="subject"
+data-subject="IPS">
+<span>🌏</span>
+<strong>IPS</strong>
+<small>5 soal</small>
+</button>
+
+<button class="subject"
+data-subject="Bahasa Inggris">
+<span>🔤</span>
+<strong>Bahasa Inggris</strong>
+<small>5 soal</small>
+</button>
+
+<button class="subject"
+data-subject="PPKn">
+<span>🇮🇩</span>
+<strong>PPKn</strong>
+<small>5 soal</small>
+</button>
+
+</div>
+
+<button class="primary wide" id="startBtn">
+Mulai Kuis →
+</button>
+
+</section>
+
+<!-- HALAMAN KUIS -->
+<section id="quiz" class="hidden">
+
+<div class="topline">
+<span id="subjectName"></span>
+<span class="timer" id="timer">20 detik</span>
+</div>
+
+<div class="topline">
+<span id="questionNumber"></span>
+<span id="liveScore">Skor: 0</span>
+</div>
+
+<div class="progress">
+<div id="progress"></div>
+</div>
+
+<h2 class="question" id="questionText"></h2>
+
+<div class="answers" id="answerList"></div>
+
+<div id="feedback" class="feedback hidden"></div>
+
+<div class="quiz-footer">
+<span>Pilih satu jawaban yang benar.</span>
+<button class="primary hidden" id="nextBtn">
+Berikutnya →
+</button>
+</div>
+
+</section>
+
+<!-- HALAMAN HASIL -->
+<section id="result" class="hidden result">
+
+<h1 id="resultHeading">Kuis Selesai!</h1>
+
+<p id="resultSubtitle"></p>
+
+<div class="score" id="percentage">0%</div>
+
+<div class="stats">
+
+<div class="stat">
+<strong id="correctCount">0</strong>
+<small>Benar</small>
+</div>
+
+<div class="stat">
+<strong id="wrongCount">0</strong>
+<small>Salah</small>
+</div>
+
+<div class="stat">
+<strong id="totalScore">0</strong>
+<small>Total Poin</small>
+</div>
+
+</div>
+
+<p id="resultMessage"></p>
+
+<button class="primary wide" id="againBtn">
+Ulangi Mata Pelajaran
+</button>
+
+<button class="secondary wide" id="homeBtn">
+Pilih Mata Pelajaran Lain
+</button>
+
+</section>
+
+<div class="footer">
+KuisAman • Media Belajar Interaktif
+</div>
+
+</div>
+
+<script>
+
+// BANK SOAL
+
+const bank = {
+
+"Bahasa Indonesia": [
+{
+q:"Apa yang dimaksud dengan ide pokok paragraf?",
+a:["Kalimat penutup","Gagasan utama paragraf","Contoh tambahan","Kata sulit"],
+c:1,
+e:"Ide pokok adalah gagasan utama dalam paragraf."
+},
+{
+q:"Manakah penulisan kata baku yang tepat?",
+a:["Resiko","Ijin","Aktivitas","Apotik"],
+c:2,
+e:"Bentuk baku yang tepat adalah aktivitas."
+},
+{
+q:"Teks yang berisi langkah-langkah disebut teks ...",
+a:["Deskripsi","Prosedur","Narasi","Eksposisi"],
+c:1,
+e:"Teks prosedur menjelaskan langkah-langkah melakukan sesuatu."
+},
+{
+q:"Contoh majas personifikasi adalah ...",
+a:["Wajah seperti bulan","Angin berbisik lembut","Berlari cepat","Rumah besar"],
+c:1,
+e:"Personifikasi memberikan sifat manusia kepada benda."
+},
+{
+q:"Apa tujuan teks persuasi?",
+a:["Menghibur","Menggambarkan","Mengajak pembaca","Menceritakan"],
+c:2,
+e:"Teks persuasi bertujuan mengajak pembaca."
+}
+],
+
+"Matematika": [
+{
+q:"Hasil dari 12 × 8 adalah ...",
+a:["86","92","96","108"],
+c:2,
+e:"12 × 8 = 96."
+},
+{
+q:"Hasil dari 144 ÷ 12 adalah ...",
+a:["10","11","12","14"],
+c:2,
+e:"144 dibagi 12 adalah 12."
+},
+{
+q:"Jika x + 7 = 15, nilai x adalah ...",
+a:["6","7","8","9"],
+c:2,
+e:"x = 15 - 7 = 8."
+},
+{
+q:"Luas persegi dengan sisi 6 cm adalah ...",
+a:["12 cm²","24 cm²","30 cm²","36 cm²"],
+c:3,
+e:"Luas persegi = 6 × 6 = 36 cm²."
+},
+{
+q:"Hasil dari ¾ + ¼ adalah ...",
+a:["½","1","1¼","2"],
+c:1,
+e:"¾ + ¼ = 4/4 = 1."
+}
+],
+
+"IPA": [
+{
+q:"Organ tubuh yang berfungsi memompa darah adalah ...",
+a:["Paru-paru","Jantung","Ginjal","Lambung"],
+c:1,
+e:"Jantung memompa darah ke seluruh tubuh."
+},
+{
+q:"Proses tumbuhan membuat makanan disebut ...",
+a:["Respirasi","Fotosintesis","Adaptasi","Evaporasi"],
+c:1,
+e:"Fotosintesis membantu tumbuhan membuat makanan."
+},
+{
+q:"Planet yang dikenal sebagai Planet Merah adalah ...",
+a:["Venus","Jupiter","Mars","Saturnus"],
+c:2,
+e:"Mars dikenal sebagai Planet Merah."
+},
+{
+q:"Perubahan wujud cair menjadi gas disebut ...",
+a:["Membeku","Menguap","Mengembun","Mencair"],
+c:1,
+e:"Menguap adalah perubahan cair menjadi gas."
+},
+{
+q:"Sumber energi utama bagi kehidupan di Bumi adalah ...",
+a:["Bulan","Matahari","Angin","Batu bara"],
+c:1,
+e:"Matahari menyediakan cahaya dan panas."
+}
+],
+
+"IPS": [
+{
+q:"Kegiatan menghasilkan barang atau jasa disebut ...",
+a:["Konsumsi","Distribusi","Produksi","Impor"],
+c:2,
+e:"Produksi adalah kegiatan menghasilkan barang atau jasa."
+},
+{
+q:"Benua terbesar di dunia adalah ...",
+a:["Afrika","Asia","Eropa","Australia"],
+c:1,
+e:"Asia merupakan benua terbesar."
+},
+{
+q:"Menyalurkan barang dari produsen ke konsumen disebut ...",
+a:["Produksi","Distribusi","Konsumsi","Investasi"],
+c:1,
+e:"Distribusi adalah kegiatan menyalurkan barang."
+},
+{
+q:"ASEAN merupakan organisasi negara di kawasan ...",
+a:["Asia Timur","Asia Selatan","Asia Tenggara","Eropa"],
+c:2,
+e:"ASEAN berada di kawasan Asia Tenggara."
+},
+{
+q:"Garis yang membagi Bumi menjadi belahan utara dan selatan adalah ...",
+a:["Garis bujur","Garis khatulistiwa","Garis tanggal","Garis lintang"],
+c:1,
+e:"Garis khatulistiwa berada pada lintang 0°."
+}
+],
+
+"Bahasa Inggris": [
+{
+q:"What is the meaning of 'beautiful'?",
+a:["Jelek","Cantik atau indah","Cepat","Pintar"],
+c:1,
+e:"Beautiful berarti cantik atau indah."
+},
+{
+q:"Choose the correct sentence.",
+a:["She go to school","She goes to school","She going school","She gone school"],
+c:1,
+e:"She goes to school adalah kalimat simple present yang benar."
+},
+{
+q:"What is the past form of 'eat'?",
+a:["Eated","Eats","Ate","Eating"],
+c:2,
+e:"Bentuk lampau eat adalah ate."
+},
+{
+q:"Good morning is usually used in the ...",
+a:["Morning","Afternoon","Evening","Night"],
+c:0,
+e:"Good morning digunakan pada pagi hari."
+},
+{
+q:"What is the opposite of difficult?",
+a:["Hard","Easy","Strong","Tall"],
+c:1,
+e:"Easy berarti mudah."
+}
+],
+
+"PPKn": [
+{
+q:"Dasar negara Indonesia adalah ...",
+a:["UUD 1945","Pancasila","Bhinneka Tunggal Ika","Proklamasi"],
+c:1,
+e:"Pancasila merupakan dasar negara Indonesia."
+},
+{
+q:"Lambang negara Indonesia adalah ...",
+a:["Harimau","Garuda Pancasila","Komodo","Merpati"],
+c:1,
+e:"Lambang negara Indonesia adalah Garuda Pancasila."
+},
+{
+q:"Sila ketiga Pancasila berbunyi ...",
+a:["Ketuhanan Yang Maha Esa","Kemanusiaan yang Adil dan Beradab","Persatuan Indonesia","Keadilan Sosial"],
+c:2,
+e:"Sila ketiga berbunyi Persatuan Indonesia."
+},
+{
+q:"Arti Bhinneka Tunggal Ika adalah ...",
+a:["Bersatu kita teguh","Berbeda-beda tetapi tetap satu","Rajin pangkal pandai","Maju terus"],
+c:1,
+e:"Bhinneka Tunggal Ika berarti berbeda-beda tetapi tetap satu."
+},
+{
+q:"Contoh menghargai keberagaman adalah ...",
+a:["Memaksakan pendapat","Mengejek budaya lain","Menghormati teman berbeda budaya","Menolak bekerja sama"],
+c:2,
+e:"Menghormati perbedaan menjaga persatuan."
+}
+]
+
+};
+
+// VARIABEL APLIKASI
+
+let selectedSubject = "Bahasa Indonesia";
+let questions = [];
+let current = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let timeLeft = 20;
+let timer = null;
+let locked = false;
+let student = "Siswa";
+
+const $ = id => document.getElementById(id);
+
+function show(id) {
+  $(id).classList.remove("hidden");
+}
+
+function hide(id) {
+  $(id).classList.add("hidden");
+}
+
+// PILIH MATA PELAJARAN
+
+document.querySelectorAll(".subject").forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    document.querySelectorAll(".subject")
+      .forEach(x => x.classList.remove("selected"));
+
+    btn.classList.add("selected");
+
+    selectedSubject = btn.dataset.subject;
+
+  });
+
+});
+
+// MULAI KUIS
+
+$("startBtn").addEventListener("click", () => {
+
+  student = $("studentName").value.trim() || "Siswa";
+
+  questions = [...bank[selectedSubject]]
+    .sort(() => Math.random() - 0.5);
+
+  current = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+
+  hide("setup");
+  hide("result");
+  show("quiz");
+
+  renderQuestion();
+
+});
+
+// TAMPILKAN SOAL
+
+function renderQuestion() {
+
+  clearInterval(timer);
+
+  locked = false;
+  timeLeft = 20;
+
+  const item = questions[current];
+
+  $("subjectName").textContent = selectedSubject;
+
+  $("questionNumber").textContent =
+    `Soal ${current + 1} dari ${questions.length}`;
+
+  $("progress").style.width =
+    `${current / questions.length * 100}%`;
+
+  $("questionText").textContent = item.q;
+
+  $("answerList").innerHTML = "";
+
+  hide("feedback");
+  hide("nextBtn");
+
+  const letters = ["A", "B", "C", "D"];
+
+  item.a.forEach((answer, i) => {
+
+    const button = document.createElement("button");
+
+    button.className = "answer";
+
+    button.textContent = letters[i] + ". " + answer;
+
+    button.onclick = () => chooseAnswer(i);
+
+    $("answerList").appendChild(button);
+
+  });
+
+  $("liveScore").textContent = "Skor: " + score;
+
+  $("timer").textContent = timeLeft + " detik";
+
+  timer = setInterval(() => {
+
+    timeLeft--;
+
+    $("timer").textContent = timeLeft + " detik";
+
+    if (timeLeft <= 0) {
+      chooseAnswer(-1);
+    }
+
+  }, 1000);
+
+}
+
+// PERIKSA JAWABAN
+
+function chooseAnswer(choice) {
+
+  if (locked) return;
+
+  locked = true;
+
+  clearInterval(timer);
+
+  const item = questions[current];
+
+  const buttons = [...$("answerList").children];
+
+  buttons.forEach((button, i) => {
+
+    button.disabled = true;
+
+    if (i === item.c) {
+      button.classList.add("correct");
+    }
+
+    if (i === choice && choice !== item.c) {
+      button.classList.add("wrong");
+    }
+
+  });
+
+  if (choice === item.c) {
+
+    correct++;
+
+    score += 100 + timeLeft * 5;
+
+    $("feedback").className = "feedback good";
+
+    $("feedback").textContent =
+      "✓ Benar! " + item.e;
+
+  } else {
+
+    wrong++;
+
+    $("feedback").className = "feedback bad";
+
+    $("feedback").textContent =
+      (choice === -1 ? "Waktu habis. " : "Belum tepat. ") + item.e;
+
+  }
+
+  show("feedback");
+
+  $("liveScore").textContent = "Skor: " + score;
+
+  $("nextBtn").textContent =
+    current === questions.length - 1
+    ? "Lihat Hasil →"
+    : "Soal Berikutnya →";
+
+  show("nextBtn");
+
+}
+
+// SOAL BERIKUTNYA
+
+$("nextBtn").addEventListener("click", () => {
+
+  current++;
+
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+
+});
+
+// HASIL AKHIR
+
+function finishQuiz() {
+
+  clearInterval(timer);
+
+  hide("quiz");
+  show("result");
+
+  const percentage = Math.round(
+    correct / questions.length * 100
+  );
+
+  $("resultHeading").textContent =
+    percentage >= 80
+    ? "Hebat, " + student + "!"
+    : percentage >= 60
+    ? "Bagus, " + student + "!"
+    : "Tetap semangat, " + student + "!";
+
+  $("resultSubtitle").textContent =
+    "Hasil kuis mata pelajaran " + selectedSubject;
+
+  $("percentage").textContent = percentage + "%";
+
+  $("correctCount").textContent = correct;
+
+  $("wrongCount").textContent = wrong;
+
+  $("totalScore").textContent = score;
+
+  $("resultMessage").textContent =
+    percentage >= 80
+    ? "Pemahamanmu sangat baik. Pertahankan!"
+    : percentage >= 60
+    ? "Terus berlatih agar hasilnya semakin baik."
+    : "Jangan menyerah. Pelajari pembahasan dan coba lagi.";
+
+}
+
+// ULANGI KUIS
+
+$("againBtn").addEventListener("click", () => {
+
+  questions = [...bank[selectedSubject]]
+    .sort(() => Math.random() - 0.5);
+
+  current = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+
+  hide("result");
+  show("quiz");
+
+  renderQuestion();
+
+});
+
+// KEMBALI KE MENU
+
+$("homeBtn").addEventListener("click", () => {
+
+  clearInterval(timer);
+
+  hide("result");
+  show("setup");
+
+});
+
+</script>
+
+</body>
+</html>
